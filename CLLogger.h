@@ -9,7 +9,7 @@
 class CLLogger {
        public:
                static CLLogger* GetInstance();
-               CLStatus WriteLogMsg(const char* pstrMsg , long lErrorCode);
+               static CLStatus WriteLogMsg(const char* pstrMsg , long lErrorCode);
                CLStatus WriteLog(const char *pstrMsg , long lErrorCode);
                CLStatus Flush();
                CLLogger(CLLogger&) = delete;
