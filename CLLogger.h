@@ -1,6 +1,7 @@
 #ifndef __CLLOGGER_H__
 #define __CLLOGGER_H__
 #include "CLStatus.h"
+#include <pthread.h>
 
 #define LOG_FILE_NAME   "CLLogger.txt"
 #define MAX_SIZE        256
@@ -9,7 +10,7 @@
 class CLLogger {
        public:
                static CLLogger* GetInstance();
-               CLStatus WriteLogMsg(const char* pstrMsg , long lErrorCode);
+               static CLStatus WriteLogMsg(const char* pstrMsg , long lErrorCode);
                CLStatus WriteLog(const char *pstrMsg , long lErrorCode);
                CLStatus Flush();
                CLLogger(CLLogger&) = delete;
@@ -21,10 +22,15 @@ class CLLogger {
                static void OnProcessExit();
 
        private:
-               static CLLogger *m_pLog;
                int m_fd;
                char *m_pLogBuffer;
                unsigned int m_nUsedBytesForBuffer;
                bool m_bFlagForProcessExit;               
+	       CLStatus WriteMsgAndErrcodeToFile (const char* pstrMsg , const char* pstrErrcode);
+//@m_log : used as singlton model
+	       static pthread_mutex_t* InitializeMutex();
+               static CLLogger *m_pLog;
+	       static pthread_mutex_t *m_pMutexForWritingLog;
+	       static pthread_mutex_t *m_pMutexForCreatingLogger;
 };
 #endif
